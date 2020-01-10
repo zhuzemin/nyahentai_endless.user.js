@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        nyahentai Endless
 // @namespace   nyahentai_endless
 // @supportURL  https://github.com/zhuzemin
@@ -22,16 +22,22 @@ var config = {
 var debug = config.debug ? console.log.bind(console)  : function () {
 };
 
+var old_scrollY = 0;
+var request_pct = 0.05; // percentage of window height left on document to request next page, value must be between 0-1
+
+var scroll_events = 0;
+var event_type = "scroll"; // or "wheel"
+
 function onScroll(e) {
     var y = window.scrollY;
     // if (scroll_events === 0) old_scrollY = y; // stops only if scroll position was on 2. page
     var delta = e.deltaY || y - old_scrollY; // NOTE: e.deltaY for "wheel" event
     if (delta > 0 && (window.innerHeight + y) >= (document.body.clientHeight - (window.innerHeight * request_pct))) {
-        console.log("scroll end");
+        debug("scroll end");
         window.removeEventListener(event_type, onScroll, false);
 
         try {
-            requestNextPage(next_link || document.getElementById("pnnext").href);
+            requestNextPage();
         } catch (err) {
             console.error(err.name + ": " + err.message);
             // NOTE: recovery unnecessary, input event handles it with reset on new search
@@ -56,21 +62,22 @@ class Content{
 }
 
 
-function requestNextPage(link) {
+function requestNextPage() {
     var next=document.querySelector("span.next");
     var a=next.querySelector("a");
-    var content=Content(a.href);
-    request();
+    debug("href: "+a.href);
+    var content=new Content(a.href);
+    var parentNode=document.querySelector('#content');
+    request(content,parentNode);
 }
 
 var init = function () {
-    var event_type = "scroll"; // or "wheel"
-
+    setInterval(function(){
     window.addEventListener(event_type, onScroll, false);
     window.addEventListener("beforeunload", function () {
         window.scrollTo(0, 0);
     }, false);
-
+    }, 3000);
 }
 
 
