@@ -1,4 +1,4 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name        nyahentai Endless
 // @namespace   nyahentai_endless
 // @supportURL  https://github.com/zhuzemin
@@ -17,7 +17,7 @@
 // @license     CC Attribution-ShareAlike 4.0 International; http://creativecommons.org/licenses/by-sa/4.0/
 // ==/UserScript==
 var config = {
-    'debug': true
+    'debug': false
 }
 var debug = config.debug ? console.log.bind(console)  : function () {
 };
@@ -39,7 +39,7 @@ function onScroll(e) {
         try {
             requestNextPage();
         } catch (err) {
-            console.error(err.name + ": " + err.message);
+            debug(err.name + ": " + err.message);
             // NOTE: recovery unnecessary, input event handles it with reset on new search
         }
     }
