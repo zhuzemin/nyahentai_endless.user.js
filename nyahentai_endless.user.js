@@ -6,7 +6,7 @@
 // @include     https://en.nyahentai3.com/*
 // @include     https://zh.nyahentai.co/*
 // @include     https://ja.nyahentai.net/*
-// @version     1.0
+// @version     1.1
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -63,7 +63,8 @@ class Content{
 
 
 function requestNextPage() {
-    var next=document.querySelector("span.next");
+    var nexts=document.querySelectorAll("span.next");
+    var next=nexts[nexts.length-1];
     var a=next.querySelector("a");
     debug("href: "+a.href);
     var content=new Content(a.href);
