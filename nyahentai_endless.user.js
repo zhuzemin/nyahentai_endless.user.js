@@ -1,11 +1,13 @@
 // ==UserScript==
-// @name        nyahentai Endless
-// @namespace   nyahentai_endless
+// @name        nhentai_endless
+// @namespace   nhentai_endless
 // @supportURL  https://github.com/zhuzemin
-// @description nyaHentai 无尽载入下页
-// @include     https://en.nyahentai3.com/*
-// @include     https://zh.nyahentai.co/*
-// @include     https://ja.nyahentai.net/*
+// @description nhentai automate next page
+// @include     https://nhentai.net/g/*
+// @include     https://en.nyahentai3.com/g/*
+// @include     https://zh.nyahentai.co/g/*
+// @include     https://ja.nyahentai.net/g/*
+// @include     https://zh.nyahentai.pro/g/*
 // @version     1.1
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
