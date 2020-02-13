@@ -3,12 +3,17 @@
 // @namespace   nhentai_endless
 // @supportURL  https://github.com/zhuzemin
 // @description nhentai automate next page
+// @include     https://nhentai.net/search/*
+// @include     https://en.nyahentai3.com/search/*
+// @include     https://zh.nyahentai.co/search/*
+// @include     https://ja.nyahentai.net/search/*
+// @include     https://zh.nyahentai.pro/search/*
 // @include     https://nhentai.net/
 // @include     https://en.nyahentai3.com/
 // @include     https://zh.nyahentai.co/
 // @include     https://ja.nyahentai.net/
 // @include     https://zh.nyahentai.pro/
-// @version     1.11
+// @version     1.12
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
