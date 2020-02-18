@@ -16,7 +16,7 @@
 // @include     https://zh.nyahentai.pro/*
 // @include     https://ja.nyahentai.org/*
 // @include     https://zh.nyahentai4.com/*
-// @version     1.12
+// @version     1.13
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -25,6 +25,13 @@
 // @author      zhuzemin
 // @license     Mozilla Public License 2.0; http://www.mozilla.org/MPL/2.0/
 // @license     CC Attribution-ShareAlike 4.0 International; http://creativecommons.org/licenses/by-sa/4.0/
+// @connect-src zh.nyahentai4.com
+// @connect-src ja.nyahentai.org
+// @connect-src zh.nyahentai.pro
+// @connect-src ja.nyahentai.net
+// @connect-src zh.nyahentai.co
+// @connect-src en.nyahentai3.com
+// @connect-src nhentai.net
 // ==/UserScript==
 var config = {
     'debug': false
@@ -73,13 +80,27 @@ class Content{
 
 
 function requestNextPage() {
-    var nexts=document.querySelectorAll("span.next");
-    var next=nexts[nexts.length-1];
-    var a=next.querySelector("a");
-    debug("href: "+a.href);
-    var content=new Content(a.href);
-    var parentNode=document.querySelector('#content');
+    var nextUrl;
+    var parentNode;
+    //in main page or search page
+    if(!/https:\/\/[^\/]*\/g\/\d*\/list\/\d*\//.test(window.location.href)) {
+        var nexts = document.querySelectorAll("span.next");
+        var next = nexts[nexts.length - 1];
+        var a = next.querySelector("a");
+        debug("href: " + a.href);
+        nextUrl=a.href;
+        parentNode=document.body;
+    }
+    //in content page
+    else
+        {
+            var nextBtnList = document.querySelectorAll('a.changeSrc.next');
+            nextUrl = nextBtnList[nextBtnList.length - 1].href;
+            parentNode=document.querySelector('#content');
+        }
+    var content = new Content(nextUrl);
     request(content,parentNode);
+
 }
 
 var init = function () {
@@ -93,7 +114,6 @@ var init = function () {
 
 
 function request(object,parentNode) {
-    var retries = 10;
     GM_xmlhttpRequest({
         method: object.method,
         url: object.url,
@@ -101,19 +121,21 @@ function request(object,parentNode) {
         overrideMimeType: object.charset,
         //synchronous: true
         onload: function (responseDetails) {
-            if (responseDetails.status != 200) {
-                // retry
-                if (retries--) {          // *** Recurse if we still have retries
-                    setTimeout(request(),2000);
-                    return;
-                }
-            }
             debug(responseDetails);
             var html = new DOMParser().parseFromString(responseDetails.responseText, "text/html");
             //debug(galleryHtml);
             //Dowork
-            var content = html.querySelector('#content');
-            parentNode.insertBefore(content,null);
+            var content;
+            var nextElement=null;
+            if(!/\/g\/\d*\/list\/\d*\//.test(responseDetails.finalUrl)){
+                content = html.querySelector('#content');
+                nextElement=parentNode.querySelector('#footer');
+
+            }
+            else{
+                content=html.querySelector('#page-container');
+            }
+            parentNode.insertBefore(content,nextElement);
         }
     });
 }
