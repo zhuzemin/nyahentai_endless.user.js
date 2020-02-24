@@ -16,7 +16,7 @@
 // @include     https://zh.nyahentai.pro/*
 // @include     https://ja.nyahentai.org/*
 // @include     https://zh.nyahentai4.com/*
-// @version     1.13
+// @version     1.14
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -32,6 +32,7 @@
 // @connect-src zh.nyahentai.co
 // @connect-src en.nyahentai3.com
 // @connect-src nhentai.net
+// @connect-src nyahentai.org
 // ==/UserScript==
 var config = {
     'debug': false
@@ -39,6 +40,8 @@ var config = {
 var debug = config.debug ? console.log.bind(console)  : function () {
 };
 
+var interval;
+var lastUrl;
 var old_scrollY = 0;
 var request_pct = 0.05; // percentage of window height left on document to request next page, value must be between 0-1
 
@@ -93,22 +96,30 @@ function requestNextPage() {
     }
     //in content page
     else
-        {
-            var nextBtnList = document.querySelectorAll('a.changeSrc.next');
-            nextUrl = nextBtnList[nextBtnList.length - 1].href;
-            parentNode=document.querySelector('#content');
-        }
-    var content = new Content(nextUrl);
-    request(content,parentNode);
+    {
+        var nextBtnList = document.querySelectorAll('a.changeSrc.next');
+        nextUrl = nextBtnList[nextBtnList.length - 1].href;
+        parentNode=document.querySelector('#content');
+    }
+    debug('lastUrl: '+lastUrl)
+    debug('nextUrl: '+nextUrl)
+    if(lastUrl!=nextUrl){
+        var content = new Content(nextUrl);
+        request(content,parentNode);
+        lastUrl=nextUrl;
+    }
+    else {
+        clearInterval(interval);
+    }
 
 }
 
 var init = function () {
-    setInterval(function(){
-    window.addEventListener(event_type, onScroll, false);
-    window.addEventListener("beforeunload", function () {
-        window.scrollTo(0, 0);
-    }, false);
+    interval=setInterval(function(){
+        window.addEventListener(event_type, onScroll, false);
+        window.addEventListener("beforeunload", function () {
+            window.scrollTo(0, 0);
+        }, false);
     }, 3000);
 }
 
