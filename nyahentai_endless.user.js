@@ -16,7 +16,7 @@
 // @include     https://zh.nyahentai.pro/*
 // @include     https://ja.nyahentai.org/*
 // @include     https://zh.nyahentai4.com/*
-// @version     1.14
+// @version     1.15
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -85,21 +85,33 @@ class Content{
 function requestNextPage() {
     var nextUrl;
     var parentNode;
-    //in main page or search page
-    if(!/https:\/\/[^\/]*\/g\/\d*\/list\/\d*\//.test(window.location.href)) {
-        var nexts = document.querySelectorAll("span.next");
-        var next = nexts[nexts.length - 1];
-        var a = next.querySelector("a");
+    if(/nhentai\.net/.test(window.location.href)){
+
+        var nexts = document.querySelectorAll("a.next");
+        var a = nexts[nexts.length - 1];
         debug("href: " + a.href);
         nextUrl=a.href;
         parentNode=document.body;
     }
-    //in content page
-    else
-    {
-        var nextBtnList = document.querySelectorAll('a.changeSrc.next');
-        nextUrl = nextBtnList[nextBtnList.length - 1].href;
-        parentNode=document.querySelector('#content');
+    else{
+        //in main page or search page
+        if(!/https:\/\/[^\/]*\/g\/\d*\/list\/\d*\//.test(window.location.href)) {
+
+            var nexts = document.querySelectorAll("span.next");
+            var next = nexts[nexts.length - 1];
+            var a = next.querySelector("a");
+            debug("href: " + a.href);
+            nextUrl=a.href;
+            parentNode=document.body;
+        }
+        //in content page
+        else
+        {
+            var nextBtnList = document.querySelectorAll('a.changeSrc.next');
+            nextUrl = nextBtnList[nextBtnList.length - 1].href;
+            parentNode=document.querySelector('#content');
+        }
+
     }
     debug('lastUrl: '+lastUrl)
     debug('nextUrl: '+nextUrl)
@@ -109,7 +121,7 @@ function requestNextPage() {
         lastUrl=nextUrl;
     }
     else {
-        clearInterval(interval);
+        //clearInterval(interval);
     }
 
 }
